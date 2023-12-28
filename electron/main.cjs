@@ -46,3 +46,98 @@ app.on('window-all-closed', function() {
       app.quit();
   }
 });
+
+ipcMain.on("close-phone-window", () => {
+    try {
+        console.log("Received phone deletiion")
+        modalWindow.close()
+        modalWindow = null
+    } catch (error) {
+        console.log(error)
+    }
+  })
+  ipcMain.on("copy-this", (event, param) => {
+    clipboard.writeText(param)
+  })
+  ipcMain.on("content-update", () => {
+    console.log("recieved content-update ")
+    mainWindow.webContents.send("content-updated")
+  })
+
+
+const createPhonWindow = (file, type, numbersList) => {
+    console.log("Received phone creation");
+    modalWindow = new BrowserWindow({
+        width: 600,
+        height: 600,
+        parent: mainWindow,
+        modal: true,
+        resizable: false,
+        show: false,
+        autoHideMenuBar: true,
+        webPreferences: {
+            nodeIntegration: true,
+            webSecurity: false,
+            preload: path.join(__dirname, 'preload.cjs'),
+        },
+    });
+    console.log(`http://localhost:5173/#/upload/${type}`)
+    modalWindow.loadURL(`http://localhost:5173/#/upload/${type}`);
+    modalWindow.once('ready-to-show', () => {
+        modalWindow.show();
+        if (numbersList) {
+            console.log(" i am sending ", numbersList)
+            modalWindow.webContents.send("phone-file-selected", file.filePaths[0], numbersList);
+        } else {
+            console.log("sending image", file.filePaths[0])
+            modalWindow.webContents.send("image-file-selected", file.filePaths[0])
+        }
+    });
+    modalWindow.on('closed', () => {
+        modalWindow = null;
+    });
+  };
+
+ipcMain.on('open-image-file', async (event, arg) => {
+    const file = await dialog.showOpenDialog(mainWindow, {
+        properties: ['openFile'],
+        filters: [{
+                name: "JPG Images",
+                extensions: ["jpg"],
+            },
+            {
+                name: 'PNG Images',
+                extensions: ['png'],
+            },
+            {
+                name: 'JPEG Images',
+                extensions: ['jpeg'],
+            },
+        ],
+    });
+    if (!file.canceled) {
+        createPhonWindow(file, 'image');
+    }
+  });
+
+
+ipcMain.on('open-phone-file', async (event, arg) => {
+    const file = await dialog.showOpenDialog(mainWindow, {
+        properties: ['openFile'],
+        filters: [{
+                name: "Text Files",
+                extensions: ["txt"],
+            },
+            {
+                name: 'CSV Files',
+                extensions: ['csv'],
+            },
+        ],
+    });
+    if (!file.canceled) {
+        const numbersList = await parseFile(file.filePaths[0]);
+        console.log('Phone numbers in the file:', numbersList);
+        createPhonWindow(file, 'numbers', numbersList);
+    }
+  });
+  
