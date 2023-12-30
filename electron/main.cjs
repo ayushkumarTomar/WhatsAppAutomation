@@ -68,12 +68,20 @@ const {
     });
     mainWindow.loadURL("http://localhost:5173/")
     mainWindow.webContents.on("did-finish-load", () => mainWindow.show())
-    // console.log(store.get("contactsCollection"))
-    // newWindow.loadURL(
-    //   isDev
-    //     ? 'http://localhost:3000/new-component' // Replace with the URL path of your new React component
-    //     : `file://${path.join(__dirname, 'build/index.html')}#/new-component` // Add a hash-based route or query parameters to identify the new component
-    // );
+
+      /*
+      
+Use this for each window for development
+      
+     newWindow.loadURL(
+       isDev
+        ? 'http://localhost:3000/new-component' // Replace with the URL path of your new React component
+         : `file://${path.join(__dirname, 'build/index.html')}#/new-component` // Add a hash-based route or query parameters to identify the new component
+    );
+
+    */
+
+
     mainWindow.on('closed', function() {
         mainWindow = null;
     });
