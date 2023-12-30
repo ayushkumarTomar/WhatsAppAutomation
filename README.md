@@ -11,9 +11,9 @@ Contributions are always welcome!
 
 ## Technologies Used
 
-- **React:** Used for building the user interface.
-- **Vite:** Used as the build tool and development server.
-- **Electron:** Used to create the desktop application.
+- **[React](https://react.dev/):** Used for building the user interface.
+- **[Vite](https://vitejs.de):** Used as the build tool and development server.
+- **[ElectronJs](https://www.electronjs.org/):** Used to create the desktop application.
 
 
 ## Authors
@@ -63,8 +63,8 @@ npm start
 
 ## Packaging
 
-You can use vite to build the react App
-and electron-builder to bundle the electron
+You can use [vite](https://vitejs.dev/guide/) to build the react App
+and [electron-builder](https://www.electron.build/index.html) to bundle the electron
 You can take help from this [video](https://youtu.be/n18d1vQsPFM?si=EOb5PiZFzb_iE09Y)
 
 
